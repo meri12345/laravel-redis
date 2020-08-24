@@ -16,5 +16,5 @@ use Illuminate\Support\Facades\Redis;
 
 Route::get('/', function () {
    $visits = Redis::incr('visits');
-    return $visits;
+    return view('welcome',compact('visits'));
 });
