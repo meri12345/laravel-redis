@@ -33,12 +33,7 @@ Route::get('/videos/{id}/download', function ($id) {
     return redirect("/videos/$id");
 });
 
-Route::get('/articles/{article}',function(\App\Article $article){
-    $article = Redis::zincrby('trending',1,$article);
-   //$article = Redis::zincrby('trending',1,$article->id);
-   return $article;
 
-});
 
 
 Route::get('/articles',function(){
@@ -49,5 +44,29 @@ Route::get('/articles',function(){
         array_map('json_decode',$trending)
     );
     return $articles;
+
+});
+
+Route::get('/articles/cache',function(){
+//    if($value=Redis::get('all.articles')){
+//
+//        return  json_decode($value);
+//    }
+//
+//    $articles = \App\Article::all();
+//    Redis::set('all.articles',$articles);
+//    return $articles;
+
+     return \Cache::remember('articles.all',60*60,function(){
+        return \App\Article::all();
+    });
+
+
+});
+
+Route::get('/articles/{article}',function(\App\Article $article){
+    $article = Redis::zincrby('trending',1,$article);
+    //$article = Redis::zincrby('trending',1,$article->id);
+    return $article;
 
 });
