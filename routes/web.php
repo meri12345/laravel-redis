@@ -47,11 +47,14 @@ Route::get('/videos/{id}/download', function ($id) {
 
 Route::get('/articles',function(){
     $trending = Redis::zrevrange('trending',0,2);
-    //$articles = \App\Article::whereIn('id',$trending)->get();
+//
+//    $articles = \App\Article::hydrate(
+//        array_map('json_decode',$trending)
+//    );
 
-    $articles = \App\Article::hydrate(
-        array_map('json_decode',$trending)
-    );
+    $articles = collect($trending)->map(function($id){
+       return \App\Article::find($id);
+    });
     return $articles;
 
 });
@@ -72,8 +75,8 @@ Route::get('/articles/cache',function(Articles $articles){
 });
 
 Route::get('/articles/{article}',function(\App\Article $article){
-    $article = Redis::zincrby('trending',1,$article);
-    //$article = Redis::zincrby('trending',1,$article->id);
+    $article = Redis::zincrby('trending',1,$article->id);
+    //$article = Redis::zincrby('trending',1,$article);
     return $article;
 
 });
