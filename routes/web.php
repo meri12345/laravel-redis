@@ -3,6 +3,15 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redis;
 
+
+class Articles{
+    public function all(){
+       return \Cache::remember('articles.all',60*60,function(){
+            return \App\Article::all();
+        });
+    }
+
+}
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,7 +56,7 @@ Route::get('/articles',function(){
 
 });
 
-Route::get('/articles/cache',function(){
+Route::get('/articles/cache',function(Articles $articles){
 //    if($value=Redis::get('all.articles')){
 //
 //        return  json_decode($value);
@@ -57,9 +66,7 @@ Route::get('/articles/cache',function(){
 //    Redis::set('all.articles',$articles);
 //    return $articles;
 
-     return \Cache::remember('articles.all',60*60,function(){
-        return \App\Article::all();
-    });
+     return $articles->all();
 
 
 });
