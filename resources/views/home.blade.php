@@ -65,8 +65,8 @@
     </head>
     <body>
         <div>
-            <h1>Video {{$id}}</h1>
-            <p>Video downloads: {{$downloads??'0'}}</p>
+            <h1>Welcome</h1>
+            <p>Page visited {{$visits??'0'}} times.</p>
         </div>
     </body>
 </html>

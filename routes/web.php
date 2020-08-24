@@ -15,6 +15,20 @@ use Illuminate\Support\Facades\Redis;
 */
 
 Route::get('/', function () {
-   $visits = Redis::incr('visits');
-    return view('welcome',compact('visits'));
+    Redis::incr('visits');
+    $visits = Redis::get("visits");
+    return view('home',compact('visits'));
+});
+
+Route::get('/videos/{id}', function ($id) {
+   $downloads = Redis::get("videos.$id.downloads");
+    return view('welcome',[
+        'downloads'=>$downloads,
+        'id'=>$id
+    ]);
+});
+
+Route::get('/videos/{id}/download', function ($id) {
+    Redis::incr("videos.$id.downloads");
+    return redirect("/videos/$id");
 });
